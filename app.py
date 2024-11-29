@@ -1,11 +1,22 @@
 import streamlit as st
+import os
+from groq import Client  # Import the correct class
+from dotenv import load_dotenv
 
-from groq import Groq
+# Load environment variables from .env file
+load_dotenv()
 
-client = Groq(
-    api_key='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'
-)
+# Get the API key
+api_key = os.getenv("GROQ_API_KEY")
 
+# Ensure the API key is loaded
+if not api_key:
+    raise ValueError("API key not found. Please set GROQ_API_KEY in the .env file.")
+
+# Initialize the client
+client = Client(api_key=api_key)
+
+# Make the API call
 chat_completion = client.chat.completions.create(
     messages=[
         {
@@ -16,4 +27,6 @@ chat_completion = client.chat.completions.create(
     model="llama3-8b-8192",
 )
 
-st.write(chat_completion.choices[0].message.content)
+# Output the response
+response = chat_completion.choices[0].message.content
+st.write(response)
